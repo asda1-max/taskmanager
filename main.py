@@ -37,7 +37,7 @@ TASK_NAME = 0
 
 
 async def start(update : Update, context :ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("sup mantab jiwa")
+    await update.message.reply_text("sup mantab jiwa r")
 
 
 async def sign_up(update : Update, context :ContextTypes.DEFAULT_TYPE):
