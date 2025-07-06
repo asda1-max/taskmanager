@@ -37,7 +37,7 @@ TASK_NAME = 0
 
 
 async def start(update : Update, context :ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("sup mantab jiwa r")
+    await update.message.reply_text("sup mantab jiwa")
 
 
 async def sign_up(update : Update, context :ContextTypes.DEFAULT_TYPE):
@@ -57,6 +57,7 @@ async def sign_up(update : Update, context :ContextTypes.DEFAULT_TYPE):
             usrdat[usn] = pw
             await update.message.reply_text(f"Berhasil daftar : '{usn}'")
             savefile()
+       
 
 async def sign_in(update : Update, context :ContextTypes.DEFAULT_TYPE):
     message = update.message.text
@@ -92,12 +93,20 @@ async def cancel(update : Update, context :ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("memasukan task digagalkan oleh user")
     return ConversationHandler.END
 
-async def saveTask(update : Update, _context :ContextTypes.DEFAULT_TYPE):
-    uid = str(update.effective_user.id)
+async def saveTask(update : Update, context :ContextTypes.DEFAULT_TYPE):
+    uid = update.effective_user.id
     load_task_data()
     tn = update.message.text.strip()
 
-    usrtask.setdefault(uid, []).append(tn)
+    # Get the username from the active session
+    session = active_sessions.get(uid)
+    if not session:
+        await update.message.reply_text("Kamu belum login.")
+        return ConversationHandler.END
+
+    username = session["username"]
+
+    usrtask.setdefault(username, []).append(tn)
     
     saveTaskData()
     await update.message.reply_text(f"Task '{tn}' telah disimpan 💼")
@@ -113,15 +122,16 @@ async def add_task(update : Update, context : ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
 async def view_task(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    uid = str(update.effective_user.id)
-    uid2 = update.effective_user.id
+    
+    uid = update.effective_user.id
+    username = active_sessions.get(uid)["username"]
 
-    if uid2 not in active_sessions:
+    if uid not in active_sessions:
         await update.message.reply_text("Kamu belum login.")
         return
 
     load_task_data()
-    tasks = usrtask.get(uid, [])
+    tasks = usrtask.get(username, [])
 
     if not tasks:
         await update.message.reply_text("Belum ada task tersimpan... 😴")
