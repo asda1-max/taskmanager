@@ -33,6 +33,7 @@ def saveTaskData():
         json.dump(usrtask, taskfile, indent=4)  
 
 TASK_NAME = 0  
+TASK_Deadline = 0
 
 
 
@@ -142,18 +143,16 @@ async def view_task(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg += f"{i}. {task}\n"
 
     await update.message.reply_text(msg)
-
-
         
 conv = ConversationHandler(
     entry_points=[CommandHandler("addtask", add_task)],
     states={
-        TASK_NAME : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)]
+        TASK_NAME : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)],
+        TASK_Deadline : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)]
     },
     fallbacks=[CommandHandler("cancel", cancel )]
     )     
         
-
 app = ApplicationBuilder().token("7758310262:AAFZfDolpGpyVVauy6poLvELnlMMkbIzKHo").build()
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("su", sign_up))
