@@ -32,8 +32,7 @@ def saveTaskData():
     with open("taskdata.json", "w") as taskfile:
         json.dump(usrtask, taskfile, indent=4)  
 
-TASK_NAME = 0  
-TASK_Deadline = 0
+TASK_NAME, TASK_DEADLINE, TASK_PRIORITY = range(3)
 
 
 
@@ -98,6 +97,11 @@ async def saveTask(update : Update, context :ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     load_task_data()
     tn = update.message.text.strip()
+    task = {
+        "TASK_NAME" : context.user_data["TASK_NAME"],
+        "TASK_DEADLINE" : context.user_data["TASK_DEADLINE"],
+        "TASK_PRIORITY" : tn
+    }
 
     # Get the username from the active session
     session = active_sessions.get(uid)
@@ -107,17 +111,37 @@ async def saveTask(update : Update, context :ContextTypes.DEFAULT_TYPE):
 
     username = session["username"]
 
-    usrtask.setdefault(username, []).append(tn)
+    usrtask.setdefault(username, []).append(task)
     
     saveTaskData()
-    await update.message.reply_text(f"Task '{tn}' telah disimpan 💼")
+    await update.message.reply_text(f"Task '{task['TASK_NAME']}' telah disimpan 💼")
     return ConversationHandler.END
 
-async def add_task(update : Update, context : ContextTypes.DEFAULT_TYPE):
+async def add_taskName(update : Update, context : ContextTypes.DEFAULT_TYPE):
     uid = update.effective_user.id
     if uid in active_sessions: 
         await update.message.reply_text("Masukan Nama Task : ")
         return TASK_NAME
+    else :
+        await update.message.reply_text("Kamu belum login. Gunakan /si dulu ya~")
+        return ConversationHandler.END
+    
+async def add_taskDeadline(update : Update, context : ContextTypes.DEFAULT_TYPE):
+    uid = update.effective_user.id
+    if uid in active_sessions:
+        context.user_data["TASK_NAME"] = update.message.text.strip() 
+        await update.message.reply_text("Masukan Deadline Task : ")
+        return TASK_DEADLINE
+    else :
+        await update.message.reply_text("Kamu belum login. Gunakan /si dulu ya~")
+        return ConversationHandler.END
+    
+async def add_taskPriority(update : Update, context : ContextTypes.DEFAULT_TYPE):
+    uid = update.effective_user.id
+    if uid in active_sessions: 
+        context.user_data["TASK_DEADLINE"] = update.message.text.strip() 
+        await update.message.reply_text("Masukan Priority Task : ")
+        return TASK_PRIORITY
     else :
         await update.message.reply_text("Kamu belum login. Gunakan /si dulu ya~")
         return ConversationHandler.END
@@ -145,10 +169,11 @@ async def view_task(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(msg)
         
 conv = ConversationHandler(
-    entry_points=[CommandHandler("addtask", add_task)],
+    entry_points=[CommandHandler("addtask", add_taskName)],
     states={
-        TASK_NAME : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)],
-        TASK_Deadline : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)]
+        TASK_NAME : [MessageHandler(filters.TEXT & ~filters.COMMAND, add_taskDeadline)],
+        TASK_DEADLINE : [MessageHandler(filters.TEXT & ~filters.COMMAND, add_taskPriority)],
+        TASK_PRIORITY : [MessageHandler(filters.TEXT & ~filters.COMMAND, saveTask)]
     },
     fallbacks=[CommandHandler("cancel", cancel )]
     )     
