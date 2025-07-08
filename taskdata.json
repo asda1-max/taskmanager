@@ -1,40 +1,21 @@
 {
     "asu": [
         {
-            "TASK_NAME": "woilah",
-            "TASK_DEADLINE": "wasulah",
-            "TASK_PRIORITY": "kontol"
-        },
-        {
-            "TASK_NAME": "kentu",
-            "TASK_DEADLINE": "13 jan",
-            "TASK_PRIORITY": "woi"
-        },
-        {
             "TASK_NAME": "woi",
-            "TASK_DEADLINE": "01-08-2025",
-            "TASK_PRIORITY": "1"
+            "TASK_DESC": "asu",
+            "TASK_DEADLINE": "09-07-2025",
+            "TASK_PRIORITY": "Sangat Penting"
         },
         {
-            "TASK_NAME": "awedawd",
-            "TASK_DEADLINE": "01-08-2027",
-            "TASK_PRIORITY": 1
-        }
-    ],
-    "rak": [
-        {
-            "TASK_NAME": "gendut",
-            "TASK_DEADLINE": "01-08-2025",
-            "TASK_PRIORITY": 0
+            "TASK_NAME": "s",
+            "TASK_DESC": "s",
+            "TASK_DEADLINE": "9-07-2025",
+            "TASK_PRIORITY": "Sangat Penting"
         },
         {
-            "TASK_NAME": "woi",
-            "TASK_DEADLINE": "01-08-2009",
-            "TASK_PRIORITY": "belum di set"
-        },
-        {
-            "TASK_NAME": "asudua",
-            "TASK_DEADLINE": "01-08-2099",
+            "TASK_NAME": "dasdad",
+            "TASK_DESC": "30-07-2025",
+            "TASK_DEADLINE": "30-07-2025",
             "TASK_PRIORITY": "Sangat Penting"
         }
     ]
